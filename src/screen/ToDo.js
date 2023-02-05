@@ -5,7 +5,6 @@ import {
   Modal,
   ToastAndroid,
   ScrollView,
-  ActivityIndicator,
 } from "react-native";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -23,14 +22,14 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 
 const colors = [
   "#000000",
-  "#FFCC00",
+  "#eeba0b",
   "#ff8fa3",
   "#5E5CE6",
   "#32ADE6",
-  "#FF2D55",
+  "#d90429",
   "#7400b8",
-  "#dbff00",
-  "#04DE71",
+  "#577590",
+  "#7f5539",
   "#127475",
 ];
 
@@ -46,24 +45,27 @@ export default function ToDo({ navigation }) {
   const [showTimePickerModal, setTimePicker] = React.useState(false);
   const [activeColor, setActiveColor] = React.useState(0);
   const [showColorPlatte, setColorPlatte] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   // * Add ToDo items to firebase Firestore
   const addToDo = async () => {
-    await addDoc(
-      collection(db, "todos"),
-      {
-        title: title,
-        complete: false,
-        minutes: minutes,
-        hours: hours,
-        date: date,
-        time: selectedTime,
-        color: colors[activeColor],
-      },
-      where("userId", "==", auth.currentUser.uid)
-    ).then(() => {
-      setTitle("");
-    });
+    await addDoc(collection(db, "todos"), {
+      title: title,
+      complete: false,
+      minutes: minutes,
+      hours: hours,
+      date: date,
+      time: selectedTime,
+      color: colors[activeColor],
+      authId: auth.currentUser.uid,
+    })
+      .then(() => {
+        setTitle("");
+        setLoading(true);
+      })
+      .catch((e) => {
+        alert(e);
+      });
     navigation.goBack();
   };
 
@@ -272,6 +274,7 @@ export default function ToDo({ navigation }) {
           onLayoutRootView={onLayoutRootView}
           addToDo={addToDo}
           theme={theme}
+          loading={loading}
         />
       </ScrollView>
     </View>

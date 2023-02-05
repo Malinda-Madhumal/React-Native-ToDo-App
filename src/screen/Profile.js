@@ -1,7 +1,7 @@
 import { RefreshControl, ScrollView, ToastAndroid, View } from "react-native";
 import React from "react";
-import { useSelector } from "react-redux";
-import { darktheme, lighttheme } from "../constant/theme";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { COLORS, darktheme, lighttheme } from "../constant/theme";
 import { useNavigation } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -11,20 +11,22 @@ import { signOut, updateEmail, updateProfile } from "firebase/auth";
 import { auth } from "../../firebase";
 import ProfileImage from "../components/ProfileImage";
 import UserInformationSection from "../components/UserInformationSection";
+import { setTheme } from "../redux/actions";
 
 const wait = (timeout) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
 };
 
-export default function Profile() {
+const Profile = () => {
   const theme = useSelector((state) => state.theme);
-  const navigation = useNavigation();
   const [image, setImage] = React.useState(auth.currentUser.photoURL);
   const [name, setName] = React.useState(auth.currentUser.displayName);
   const [email, setEmail] = React.useState(auth.currentUser.email);
   const [showName, setShowName] = React.useState(false);
   const [showEmail, setShowEmail] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const onRefreshing = () => {
     setRefreshing(true);
@@ -117,12 +119,17 @@ export default function Profile() {
         navigation={navigation}
         onLayoutRootView={onLayoutRootView}
         theme={theme}
+        dispatch={dispatch}
       />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefreshing} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefreshing}
+            colors={[COLORS.red, COLORS.red]}
+          />
         }
       >
         {/* Profile Image */}
@@ -154,4 +161,20 @@ export default function Profile() {
       </ScrollView>
     </View>
   );
-}
+};
+
+const mapStateToProps = (state) => {
+  return {
+    theme: state.theme,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setTheme: (themeType) => {
+      return dispatch(setTheme(themeType));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

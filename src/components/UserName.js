@@ -10,7 +10,7 @@ export default function UserName({
   name,
   setName,
   updateName,
-  theme
+  theme,
 }) {
   return (
     <View>
@@ -105,6 +105,7 @@ export default function UserName({
               onLayout={onLayout}
               onChangeText={(text) => setName(text)}
               placeholder="Enter Name"
+              onSubmitEditing={updateName}
               style={{
                 marginLeft: 27,
                 fontSize: 15,

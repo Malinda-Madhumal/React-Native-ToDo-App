@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { FlatList } from "react-native";
 
 export default function ToDoList({
   item,
@@ -12,11 +13,15 @@ export default function ToDoList({
     <View
       style={{
         backgroundColor: item.color,
-        elevation: 10,
+        elevation: 15,
         marginHorizontal: 10,
         marginVertical: 10,
         borderRadius: 4,
         paddingVertical: 10,
+        shadowColor: item.color,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 4,
+        shadowRadius: 1,
         // paddingBottom: 70,
       }}
     >
@@ -33,15 +38,15 @@ export default function ToDoList({
         >
           <TouchableOpacity onPress={() => handlerToggle(item)}>
             {/* <Text
-            onLayout={onLayoutRootView}
-            style={{
-              color: "#fff",
-              fontSize: 15,
-              fontFamily: "Regular",
-            }}
-          >
-            {item.complete ? "complete" : "incomplete"}
-          </Text> */}
+                        onLayout={onLayoutRootView}
+                        style={{
+                          color: "#fff",
+                          fontSize: 15,
+                          fontFamily: "Regular",
+                        }}
+                      >
+                        {item.complete ? "complete" : "incomplete"}
+                      </Text> */}
             <Ionicons
               name={
                 item.complete ? "checkmark-circle" : "checkmark-circle-outline"

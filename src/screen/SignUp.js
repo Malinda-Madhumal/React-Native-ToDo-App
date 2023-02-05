@@ -6,9 +6,10 @@ import * as SplashScreen from "expo-splash-screen";
 import AuthTextInput from "../components/auth/AuthTextInput";
 import AuthButton from "../components/auth/AuthButton";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
 import Header from "../components/auth/Header";
 import { AntDesign } from "@expo/vector-icons";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function SignUp({ navigation }) {
   const [email, setEmail] = React.useState("");
@@ -17,9 +18,9 @@ export default function SignUp({ navigation }) {
   const [confirmpassword, setConfirmPassword] = React.useState("");
   const [name, setName] = React.useState("");
 
-  const signInUser = () => {
+  const signInUser = async () => {
     if (password === confirmpassword) {
-      createUserWithEmailAndPassword(auth, email, password, name)
+      await createUserWithEmailAndPassword(auth, email, password, name)
         .then((authUser) => {
           const user = authUser.user;
           updateProfile(user, {
@@ -30,6 +31,11 @@ export default function SignUp({ navigation }) {
         .catch((error) => {
           setValidation(error.message);
         });
+      await setDoc(doc(db, "users", auth.currentUser.uid), {
+        name: name,
+        id: auth.currentUser.uid,
+        email: email,
+      });
     }
   };
 
@@ -186,5 +192,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     paddingLeft: 21,
     color: COLORS.darkGrey,
+    width: '90%',
+    height: '100%'
   },
 });

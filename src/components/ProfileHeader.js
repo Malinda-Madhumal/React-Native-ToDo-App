@@ -3,7 +3,15 @@ import React from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { darktheme, lighttheme } from "../constant/theme";
 
-export default function ProfileHeader({ navigation, theme, onLayoutRootView }) {
+import { Entypo, Ionicons } from "@expo/vector-icons";
+import { setTheme } from "../redux/actions";
+
+export default function ProfileHeader({
+  navigation,
+  theme,
+  onLayoutRootView,
+  dispatch,
+}) {
   return (
     <View
       style={{
@@ -11,7 +19,7 @@ export default function ProfileHeader({ navigation, theme, onLayoutRootView }) {
         flexDirection: "row",
         alignItems: "center",
         marginLeft: 20,
-        marginBottom: 20
+        marginBottom: 20,
       }}
     >
       <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -32,6 +40,30 @@ export default function ProfileHeader({ navigation, theme, onLayoutRootView }) {
       >
         Profile
       </Text>
+
+      <TouchableOpacity
+        style={{
+          width: 45,
+          height: 45,
+          justifyContent: "center",
+          alignItems: "center",
+          marginLeft: "auto",
+          marginRight: 5
+        }}
+        onPress={() => {
+          if (theme === "light") {
+            dispatch(setTheme("dark"));
+          } else {
+            dispatch(setTheme("light"));
+          }
+        }}
+      >
+        {theme === "light" ? (
+          <Ionicons name="moon" size={27} color="#6c757d" />
+        ) : (
+          <Entypo name="light-up" size={27} color="#fff" />
+        )}
+      </TouchableOpacity>
     </View>
   );
 }
